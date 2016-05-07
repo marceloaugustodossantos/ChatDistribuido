@@ -8,6 +8,7 @@ package br.com.pod.interfacesremotas;
 import br.com.pod.objetosremotos.Grupo;
 import br.com.pod.objetosremotos.Mensagem;
 import br.com.pod.objetosremotos.Usuario;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -15,9 +16,9 @@ import java.util.List;
  *
  * @author Marcelo Augusto
  */
-public interface ServerApp {
+public interface ServerApp extends Remote {
     
-    public void login(String email) throws RemoteException;
+    public void login(long idUsuario) throws RemoteException;
 
     public void logout(long idUsuario) throws RemoteException;
     
@@ -25,12 +26,12 @@ public interface ServerApp {
 
     public List<Grupo> listarGruposExistentes() throws RemoteException;
 
-    public List<Grupo> listarGruposDeUsuario(Long idUsuario) throws RemoteException;
+    public List<Grupo> listarGruposDeUsuario(Usuario usuario) throws RemoteException;
         
-    public String getTokenNotificationUser (Long idUsuario) throws RemoteException;
+    public String getTokenNotificationUser (Usuario usuario) throws RemoteException;
 
-    public void salvarInscricaoDeUsuarioEmGrupo(long idGrupo, Long idUsuario) throws RemoteException;
+    public void salvarInscricaoDeUsuarioEmGrupo(long idGrupo, Usuario usuario) throws RemoteException;
 
     public void salvarPublicacaoEmGrupo(long idGrupo, Mensagem mensagem) throws RemoteException;
-    
+
 }

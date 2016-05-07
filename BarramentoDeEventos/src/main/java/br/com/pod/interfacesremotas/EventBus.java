@@ -5,6 +5,8 @@
  */
 package br.com.pod.interfacesremotas;
 
+import br.com.pod.objetosremotos.Mensagem;
+import br.com.pod.objetosremotos.Usuario;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -14,8 +16,8 @@ import java.rmi.RemoteException;
  */
 public interface EventBus extends Remote {
 
-    public void publish(String topic, String msg)throws RemoteException;
+    public void publish(long idGrupo, Mensagem mensagem)throws RemoteException;
 
-    public void subscribe(String topic, String ip, Integer port)throws RemoteException;
+    public void subscribe(long idGrupo, Usuario Usuario)throws RemoteException;
 
 }

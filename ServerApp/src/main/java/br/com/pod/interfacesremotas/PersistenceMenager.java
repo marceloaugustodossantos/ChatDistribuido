@@ -5,7 +5,11 @@
  */
 package br.com.pod.interfacesremotas;
 
+import br.com.pod.objetosremotos.Grupo;
+import br.com.pod.objetosremotos.Mensagem;
+import br.com.pod.objetosremotos.Usuario;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -18,5 +22,21 @@ public interface PersistenceMenager {
     public String recuperarMensagem(String token, int pos);
     
     public List<String> recuperarConversa(String token);
+
+    public Map<Long, Usuario> buscarUsuariosLogados();
+
+    public void registrarLoginDeUsuario(long idUsuario);
+
+    public void salvarUsuario(Usuario usuario);
+
+    public List<Grupo> listarGrupos();
+
+    public List<Grupo> listarGruposDeUsuario();
+
+    public List<Grupo> listarGruposDeUsuario(Long idUsuario);
+
+    public void salvarUsuarioEmGrupo(long idGrupo, Long idUsuario);
+
+    public void salvarMensagem(long idGrupo, Mensagem mensagem);
     
 }

@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package br.com.pod.barramentodeeventos;
 
-import br.com.pod.interfacesremotas.EventBus;
-import java.util.List;
+import br.com.pod.objetosremotos.Grupo;
+import br.com.pod.objetosremotos.Usuario;
 import java.util.Set;
 
 /**
@@ -31,24 +27,15 @@ public class TaskMenager extends Thread {
                 e.printStackTrace();
             }
         }
-    }
-    
+    } 
+
     private void task() {
-        Set<String> topics = eventBus.messages.keySet();
-        for (String t : topics) {
-            List<Subscriber> s = eventBus.subscribers.get(t);
-            if (s != null && s.size() > 0) {
-                //recuperar as mensagens (por tópico)
-                List<String> m = eventBus.messages.get(t);
-                if (m != null && m.size() > 0) {
-                    for (Subscriber subscriber : s) {
-                        for (String message : m) {
-                            //no final, notificar (por tópico e por inscrito)
-                            eventBus.notify(subscriber.getIp(), subscriber.getPort(), t, message);
-                            System.out.println("notificação realizada ");
-                        }
-                    }
-                }
+        Set<Long> grupos = eventBus.grupos.keySet();
+        for (Long idGrupo : grupos) {
+            Grupo grupo = eventBus.grupos.get(idGrupo);
+            for (Usuario usuario : grupo.getUsuarios()) {
+                CheckNotificationsThread checkNotifications = new CheckNotificationsThread(usuario);
+                checkNotifications.start();
             }
         }
     }
