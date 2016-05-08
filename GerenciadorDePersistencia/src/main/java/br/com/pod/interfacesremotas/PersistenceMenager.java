@@ -5,18 +5,36 @@
  */
 package br.com.pod.interfacesremotas;
 
+import br.com.pod.gerenciadordepersistencia.Grupo;
+import br.com.pod.gerenciadordepersistencia.Mensagem;
+import br.com.pod.gerenciadordepersistencia.Usuario;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author Marcelo Augusto
  */
-public interface PersistenceMenager {
-    
-    public void salvarMensagem(String token, String mensagem);
-    
-    public String recuperarMensagem(String token, int pos);
-    
-    public List<String> recuperarConversa(String token);
-    
+public interface PersistenceMenager extends Remote {
+
+    public void salvarUsuario(Usuario usuario) throws RemoteException;
+
+    public void salvarGrupo(Grupo grupo) throws RemoteException;
+
+    public List<Grupo> listarGrupos() throws RemoteException;
+
+    public List<Grupo> listarGruposDeUsuario(Long idUsuario) throws RemoteException;
+
+    public void salvarUsuarioEmGrupo(long idGrupo, Long idUsuario) throws RemoteException;
+
+    public void salvarMensagem(Long idGrup, Mensagem mensagem) throws RemoteException;
+
+    public void salvarNotificacaoDeUsuario(String token, List<Mensagem> mensagens) throws RemoteException;
+
+    public Usuario buscarUsuario(long idUsuario) throws RemoteException;
+
+    public Map<Long, Usuario> listarUsuarios() throws RemoteException;
+
 }

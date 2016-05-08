@@ -14,6 +14,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,13 +24,19 @@ import java.util.logging.Logger;
  *
  * @author Marcelo Augusto
  */
-public class TXTPersistence implements Persistence{
+public class TXTPersistence implements Persistence {
 
+    @Override
     public void salvarMensgem(String token, String mensagem) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void salvarNotificacao(String token, String notificacao) throws RemoteException {
         try {
-            File arquivo = new File("src/main/resources/tokens/" + token + "txt");
+            File arquivo = new File("src/main/resources/tokens/" + token + ".txt");
             BufferedWriter bf = new BufferedWriter(new PrintWriter(new FileWriter(arquivo, true), true));
-            bf.write(mensagem);
+            bf.write(notificacao);
             bf.newLine();
             bf.close();
         } catch (IOException e) {
@@ -35,35 +44,55 @@ public class TXTPersistence implements Persistence{
         }
     }
 
-    public String getMensagem(String token, int indice) {
+    @Override
+    public String buscarNotificacoesDeUsuario(String token) throws RemoteException {        
+        String result = null;
         try {
-            File arquivo = new File("src/main/resources/tokens/" + token + "txt");
+            File arquivo = new File("src/main/resources/tokens/" + token + ".txt");
             BufferedReader br = new BufferedReader(new FileReader(arquivo));
-            for (int k = 0; k < indice; k++) {
-                br.readLine();
-            }
-            return br.readLine();
+            result = br.readLine();
+            arquivo.delete();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return null;
+        return result;
     }
 
-    public String getMensagens(String token) {
-        try {
-            File arquivo = new File("src/main/resources/tokens/" + token + "txt");
-            BufferedReader br = new BufferedReader(new FileReader(arquivo));
-            char[] buffer = new char[1024];
-            br.read(buffer);
-            return new String(buffer);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    @Override
+    public void salvarUsuario(String string, String convertUsuarioToJson) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void salvarGrupo(String string, String convertGrupoToJson) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String buscarGrupos() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String buscarGrupo(String idGrupo) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void atualizarGrupo(String string, String convertGrupoToJson) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String buscarUsuario(String string) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<Long, Usuario> listarUsuarios() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -5,7 +5,12 @@
  */
 package br.com.pod.interfacesremotas;
 
+import br.com.pod.unidadesdepersistencia.Notificacao;
+import br.com.pod.unidadesdepersistencia.Usuario;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -13,10 +18,25 @@ import java.rmi.Remote;
  */
 public interface Persistence extends Remote {
 
-    public void salvarMensgem(String token, String mensagem);
+    public void salvarNotificacao(String token, String notificacao) throws RemoteException;
+    
+    public String buscarNotificacoesDeUsuario(String token) throws RemoteException;
 
-    public String getMensagem(String token, int indice);
+    public void salvarMensgem(String string, String msgText) throws RemoteException;
 
-    public String getMensagens(String token);
+    public void salvarUsuario(String string, String convertUsuarioToJson) throws RemoteException;
 
+    public void salvarGrupo(String string, String convertGrupoToJson) throws RemoteException;
+
+    public String buscarGrupos() throws RemoteException;
+
+    public String buscarGrupo(String idGrupo) throws RemoteException;
+
+    public void atualizarGrupo(String string, String convertGrupoToJson) throws RemoteException;
+
+    public String buscarUsuario(String string) throws RemoteException;
+    
+    public Map<Long, Usuario> listarUsuarios() throws RemoteException;
+
+    
 }

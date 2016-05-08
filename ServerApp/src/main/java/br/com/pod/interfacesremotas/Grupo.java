@@ -3,19 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.pod.objetosremotos;
+package br.com.pod.interfacesremotas;
 
 import com.sun.javafx.beans.IDProperty;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
  * @author Marcelo Augusto
  */
-public class Grupo extends RemoteObject {
+public class Grupo implements Serializable{
     
     private long id;
     private String nome;
@@ -68,6 +70,32 @@ public class Grupo extends RemoteObject {
 
     public void setMensagens(List<Mensagem> mensagens) {
         this.mensagens = mensagens;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 71 * hash + Objects.hashCode(this.nome);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Grupo other = (Grupo) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.nome, other.nome)) {
+            return false;
+        }
+        return true;
     }
     
 }

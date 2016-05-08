@@ -3,16 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.pod.objetosremotos;
+package br.com.pod.unidadesdepersistencia;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
+import java.util.Objects;
 
 /**
  *
  * @author Marcelo Augusto
  */
-public class Usuario extends RemoteObject {
+public class Usuario implements Serializable{
 
     private long id;
     private String nome;
@@ -26,6 +28,10 @@ public class Usuario extends RemoteObject {
         this.email = email;
         this.ip = ip;
         this.port = port;
+    }
+
+    Usuario() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public long getId() {
@@ -66,6 +72,37 @@ public class Usuario extends RemoteObject {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 47 * hash + Objects.hashCode(this.email);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Usuario other = (Usuario) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "id=" + id + ", nome=" + nome + ", email=" + email + ", ip=" + ip + ", port=" + port + '}';
     }
      
 }

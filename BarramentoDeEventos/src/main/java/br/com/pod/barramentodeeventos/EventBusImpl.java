@@ -11,34 +11,47 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RemoteObject;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Marcelo Augusto
  */
-public class EventBusImpl implements EventBus {
+public class EventBusImpl extends UnicastRemoteObject implements EventBus {
 
     Map<Long, Grupo> grupos = new HashMap<Long, Grupo>();
     private static ReceivingNotify receivingNotify = getReceivingNotify();
     private ServerApp serverApp = getServerApp();
 
-    public EventBusImpl() {
+    public EventBusImpl() throws RemoteException {
+        super();
         TaskMenager manager = new TaskMenager(this);
         manager.start();
     }
 
     @Override
     public void subscribe(long idGrupo, Usuario usuario) {
-        grupos.get(idGrupo).addUsuario(usuario);
-        serverApp.salvarInscricaoDeUsuarioEmGrupo(idGrupo, usuario);
+        try {
+            grupos.get(idGrupo).addUsuario(usuario);
+            serverApp.salvarInscricaoDeUsuarioEmGrupo(idGrupo, usuario);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
     public void publish(long idGrupo, Mensagem mensagem) {
-        grupos.get(idGrupo).addMensagem(mensagem);
-        serverApp.salvarPublicacaoEmGrupo(idGrupo, mensagem);
+        try {
+            grupos.get(idGrupo).addMensagem(mensagem);
+            serverApp.salvarPublicacaoEmGrupo(idGrupo, mensagem);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static void notify(Usuario usuario, String token) {

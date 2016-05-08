@@ -5,11 +5,9 @@
  */
 package br.com.pod.interfacesremotas;
 
-import br.com.pod.objetosremotos.Grupo;
-import br.com.pod.objetosremotos.Mensagem;
-import br.com.pod.objetosremotos.Usuario;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *

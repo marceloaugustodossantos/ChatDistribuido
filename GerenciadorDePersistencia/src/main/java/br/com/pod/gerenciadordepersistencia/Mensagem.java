@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.pod.objetosremotos;
+package br.com.pod.gerenciadordepersistencia;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.util.Date;
@@ -13,18 +14,16 @@ import java.util.Date;
  *
  * @author Marcelo Augusto
  */
-public class Mensagem extends RemoteObject {
+public class Mensagem implements Serializable{
 
     private long id;
     private long idUsuario;
-    private long idGrupo;
-    private String mensagem;
+private String mensagem;
     private Date data;
 
-    public Mensagem(long id, long idUsuario, long idGrupo, String mensagem, Date data) {
+    public Mensagem(long id, long idUsuario, String mensagem, Date data) {
         this.id = id;
         this.idUsuario = idUsuario;
-        this.idGrupo = idGrupo;
         this.mensagem = mensagem;
         this.data = data;
     }
@@ -45,14 +44,6 @@ public class Mensagem extends RemoteObject {
         this.idUsuario = idUsuario;
     }
 
-    public long getIdGrupo() {
-        return idGrupo;
-    }
-
-    public void setIdGrupo(long idGrupo) {
-        this.idGrupo = idGrupo;
-    }
-
     public String getMensagem() {
         return mensagem;
     }
@@ -67,6 +58,37 @@ public class Mensagem extends RemoteObject {
 
     public void setData(Date data) {
         this.data = data;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 97 * hash + (int) (this.idUsuario ^ (this.idUsuario >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Mensagem other = (Mensagem) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (this.idUsuario != other.idUsuario) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Mensagem{" + "id=" + id + ", idUsuario=" + idUsuario + ", mensagem=" + mensagem + ", data=" + data + '}';
     }
 
 }
