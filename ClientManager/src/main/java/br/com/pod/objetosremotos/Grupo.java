@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.rmi.server.RemoteObject;
 import java.util.List;
 
+/**
+ *
+ * @author Marcelo Augusto
+ */
 public class Grupo extends RemoteObject implements Serializable {
 
     private long id;
@@ -13,7 +17,7 @@ public class Grupo extends RemoteObject implements Serializable {
     public Grupo() {
     }
 
-    public Grupo(long id, String nome) {
+    public Grupo(long id, String nome, List<Long> idUsuarios) {
         this.id = id;
         this.nome = nome;
         this.idUsuarios = idUsuarios;
