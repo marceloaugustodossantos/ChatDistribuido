@@ -28,46 +28,33 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
     Persistence dropPersistence = getDropboxPersistence();
     Persistence drivePersistence = getDrivePersistence();
     Persistence txtPersistence = getTxtPersistence();
+    Gson gson = new Gson();
 
     public PersistenceMenagerImpl() throws RemoteException {
         super();
     }
 
     @Override
-    public void salvarUsuario(Usuario usuario) {
-        try {
-            drivePersistence.salvarUsuario("" + usuario.getId(), convertUsuarioToJson(usuario));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void salvarGrupo(Grupo grupo) {
-        try {
-            drivePersistence.salvarGrupo("" + grupo.getId(), convertGrupoToJson(grupo));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void salvarUsuario(Usuario usuario) throws RemoteException {
+        UsuarioRepository ur = gson.fromJson(drivePersistence.buscarUsuarios(), UsuarioRepository.class);
+        GruposRepository gr = gson.fromJson(drivePersistence.buscarGrupos(), GruposRepository.class);
+        ur.addUsuario(usuario);
+        
+////  parei aqui!!
+        
+        drivePersistence.salvarUsuarios(convertUsuariosToJson(ur));
     }
 
     @Override
     public List<Grupo> listarGrupos() throws RemoteException {
-        List<Grupo> grupos = new ArrayList<>();
-        try {
-            String gruposString = drivePersistence.buscarGrupos();
-            grupos = convertJsonToGrupoRepository(gruposString).grupos;
-         } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        return grupos;
+        String gruposString = drivePersistence.buscarGrupos();
+        return convertJsonToGrupos(gruposString).grupos;
     }
 
     @Override
     public List<Grupo> listarGruposDeUsuario(Long idUsuario) throws RemoteException {
-        List<Grupo> todos = listarGrupos();
         List<Grupo> gruposDeUsuario = new ArrayList();
-        for (Grupo grupo : todos) {
+        for (Grupo grupo : listarGrupos()) {
             List<Usuario> usuarios = grupo.getUsuarios();
             for (Usuario usuario : usuarios) {
                 if (usuario.getId() == idUsuario) {
@@ -79,40 +66,39 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
         return gruposDeUsuario;
     }
 
-    
     @Override
-    public Map<Long, Usuario> listarUsuarios() throws RemoteException {
-        return drivePersistence.listarUsuarios();
-    }
-    
-    @Override
-    public void salvarUsuarioEmGrupo(long idGrupo, Long idUsuario) throws RemoteException {
-        String grupoStr = drivePersistence.buscarGrupo(idGrupo + "");
-        Grupo grupo = convertJsonToGrupo(grupoStr);
-        grupo.addUsuario(buscarUsuario(idUsuario));
-        drivePersistence.atualizarGrupo("" + idGrupo, convertGrupoToJson(grupo));
+    public List<Usuario> listarUsuarios() throws RemoteException {
+        return gson.fromJson(drivePersistence.buscarUsuarios(), UsuarioRepository.class).usuarios;
     }
 
     @Override
     public Usuario buscarUsuario(long idUsuario) throws RemoteException {
-        return convertJsonToUsuario(drivePersistence.buscarUsuario("" + idUsuario));
+        Usuario user  = null;
+        for(Usuario u : listarUsuarios()){
+            if(u.getId() == idUsuario){
+                user =  u;
+                break;
+            }
+        }
+        return user;
     }
 
     @Override
     public void salvarMensagem(Long idGrupo, Mensagem mensagem) {
-        try {
-            drivePersistence.salvarMensgem("" + mensagem.getId(), convertMensagemToJson(mensagem));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+       
     }
-
+    
+    @Override
+    public void salvarGrupo(Grupo grupo) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public void salvarNotificacaoDeUsuario(String token, List<Mensagem> mensagens) {
         try {
             Notificacao notificacao = new Notificacao();
             notificacao.setMensagens(mensagens);
-            String notificacaoString = convertNotificationToJson(notificacao);
+            String notificacaoString = convertNotificaoToJson(notificacao);
             txtPersistence.salvarNotificacao(token, notificacaoString);
             dropPersistence.salvarNotificacao(token, notificacaoString);
         } catch (RemoteException e) {
@@ -150,61 +136,52 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
         return null;
     }
 
-    public Usuario convertJsonToUsuario(String jsonString) {
+    public UsuarioRepository convertJsonToUsuarios(String jsonString) {
         Gson gson = new Gson();
-        return gson.fromJson(jsonString, Usuario.class);
+        return gson.fromJson(jsonString, UsuarioRepository.class);
     }
 
-    public String convertUsuarioToJson(Usuario usuario) {
+    public String convertUsuariosToJson(UsuarioRepository usuarioRepository) {
         Gson gson = new Gson();
-        return gson.toJson(usuario);
+        return gson.toJson(usuarioRepository);
     }
 
-    public Grupo convertJsonToGrupo(String jsonString) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonString, Grupo.class);
-    }
-
-    public String convertGrupoToJson(Grupo grupo) {
-        Gson gson = new Gson();
-        return gson.toJson(grupo);
-    }
-
-    public Mensagem convertJsonToMensagem(String jsonString) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonString, Mensagem.class);
-    }
-
-    public String convertMensagemToJson(Mensagem mensagem) {
-        Gson gson = new Gson();
-        return gson.toJson(mensagem);
-    }
-
-    public Notificacao convertJsonToNotification(String jsonString) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonString, Notificacao.class);
-    }
-
-    public String convertUsuarioToJson(Notificacao notificacao) {
-        Gson gson = new Gson();
-        return gson.toJson(notificacao);
-    }
-    
-    public GruposRepository convertJsonToGrupoRepository(String jsonString) {
+    public GruposRepository convertJsonToGrupos(String jsonString) {
         Gson gson = new Gson();
         return gson.fromJson(jsonString, GruposRepository.class);
     }
 
-    public String convertUsuarioToJson(Grupo grupo) {
+    public String convertGruposToJson(GruposRepository gruposRepository) {
         Gson gson = new Gson();
-        return gson.toJson(grupo);
+        return gson.toJson(gruposRepository);
     }
-    public Notificacao convertJsonToNotificationRepository(String jsonString) {
+
+    public MensagensRepository convertJsonToMensagens(String jsonString) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonString, MensagensRepository.class);
+    }
+
+    public String convertMensagensToJson(MensagensRepository mensagem) {
+        Gson gson = new Gson();
+        return gson.toJson(mensagem);
+    }
+
+    public NotificacaoRepository convertJsonToNotificacoes(String jsonString) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonString, NotificacaoRepository.class);
+    }
+
+    public String convertNotificoesToJson(NotificacaoRepository notificacaoRepository) {
+        Gson gson = new Gson();
+        return gson.toJson(notificacaoRepository);
+    }
+
+    public Notificacao convertJsonToNotificacao(String jsonString) {
         Gson gson = new Gson();
         return gson.fromJson(jsonString, Notificacao.class);
     }
 
-    public String convertNotificationToJson(Notificacao notificacao) {
+    public String convertNotificaoToJson(Notificacao notificacao) {
         Gson gson = new Gson();
         return gson.toJson(notificacao);
     }

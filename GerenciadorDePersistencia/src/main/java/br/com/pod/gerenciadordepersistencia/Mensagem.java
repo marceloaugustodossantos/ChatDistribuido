@@ -18,15 +18,10 @@ public class Mensagem implements Serializable{
 
     private long id;
     private long idUsuario;
-private String mensagem;
+    private long idGrupo;
+    private String mensagem;
     private Date data;
 
-    public Mensagem(long id, long idUsuario, String mensagem, Date data) {
-        this.id = id;
-        this.idUsuario = idUsuario;
-        this.mensagem = mensagem;
-        this.data = data;
-    }
 
     public long getId() {
         return id;
@@ -88,7 +83,8 @@ private String mensagem;
 
     @Override
     public String toString() {
-        return "Mensagem{" + "id=" + id + ", idUsuario=" + idUsuario + ", mensagem=" + mensagem + ", data=" + data + '}';
+        return "Mensagem{" + "id=" + id + ", idUsuario=" + idUsuario + ", idGrupo=" + idGrupo + ", mensagem=" + mensagem + ", data=" + data + '}';
     }
 
+    
 }

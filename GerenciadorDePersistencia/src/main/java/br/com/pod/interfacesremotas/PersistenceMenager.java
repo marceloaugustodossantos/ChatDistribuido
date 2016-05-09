@@ -27,14 +27,12 @@ public interface PersistenceMenager extends Remote {
 
     public List<Grupo> listarGruposDeUsuario(Long idUsuario) throws RemoteException;
 
-    public void salvarUsuarioEmGrupo(long idGrupo, Long idUsuario) throws RemoteException;
-
     public void salvarMensagem(Long idGrup, Mensagem mensagem) throws RemoteException;
 
     public void salvarNotificacaoDeUsuario(String token, List<Mensagem> mensagens) throws RemoteException;
 
     public Usuario buscarUsuario(long idUsuario) throws RemoteException;
 
-    public Map<Long, Usuario> listarUsuarios() throws RemoteException;
+    public List<Usuario> listarUsuarios() throws RemoteException;
 
 }

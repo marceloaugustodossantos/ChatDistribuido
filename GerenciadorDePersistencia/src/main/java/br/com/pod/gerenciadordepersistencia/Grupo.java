@@ -30,7 +30,7 @@ public class Grupo implements Serializable{
         this.usuarios = new ArrayList<>();
         this.mensagens = new ArrayList<>();
     }
-    
+
     public void addUsuario(Usuario usuario){
         this.usuarios.add(usuario);
     }
@@ -57,19 +57,6 @@ public class Grupo implements Serializable{
 
     public List<Usuario> getUsuarios() {
         return usuarios;
-    }
-
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
-
-
-    public List<Mensagem> getMensagens() {
-        return mensagens;
-    }
-
-    public void setMensagens(List<Mensagem> mensagens) {
-        this.mensagens = mensagens;
     }
 
     @Override
@@ -102,5 +89,6 @@ public class Grupo implements Serializable{
     public String toString() {
         return "Grupo{" + "id=" + id + ", nome=" + nome + ", usuarios=" + usuarios + ", mensagens=" + mensagens + '}';
     }
+
     
 }
