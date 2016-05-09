@@ -5,6 +5,7 @@
  */
 package br.com.pod.unidadesdepersistencia;
 
+import br.com.pod.interfacesremotas.Persistence;
 import br.com.pod.interfacesremotas.TxLocal;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -13,22 +14,31 @@ import java.rmi.server.UnicastRemoteObject;
  *
  * @author Marcelo Augusto
  */
-public class TxLocalDropbox extends UnicastRemoteObject implements TxLocal{
-    
-    public TxLocalDropbox ()throws RemoteException{}
-    
+public class TxLocalDropbox extends UnicastRemoteObject implements TxLocal {
+
+    private Persistence persistence;
+    private String notificacoes;
+    private String grupos;
+
+    public TxLocalDropbox(DropBoxPersistence persistence) throws RemoteException {
+        this.persistence = persistence;
+    }
+
     @Override
     public void prepare() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.grupos = persistence.buscarGrupos();
+        this.notificacoes = persistence.buscarNotificacoes();
     }
 
     @Override
     public void commit() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.grupos = null;
+        this.notificacoes = null;
     }
 
     @Override
     public void rollback() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persistence.salvarNotificacoes(notificacoes);
+        persistence.atualizarGrupos(grupos);
     }
 }

@@ -18,7 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {
         System.out.println("server app");
-        Registry registry = LocateRegistry.createRegistry(8080);
+        Registry registry = LocateRegistry.createRegistry(8092);
         registry.bind("ServerApp", new ServerAppImpl());
     }
 }

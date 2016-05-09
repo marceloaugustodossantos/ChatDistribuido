@@ -37,12 +37,28 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
     @Override
     public void salvarUsuario(Usuario usuario) throws RemoteException {
         UsuarioRepository ur = gson.fromJson(drivePersistence.buscarUsuarios(), UsuarioRepository.class);
-        GruposRepository gr = gson.fromJson(drivePersistence.buscarGrupos(), GruposRepository.class);
         ur.addUsuario(usuario);
-        
-////  parei aqui!!
-        
         drivePersistence.salvarUsuarios(convertUsuariosToJson(ur));
+    }
+
+    @Override
+    public void salvarUsuarioEmGrupo(Long idUsuario, Long idGrupo) throws RemoteException {
+        GruposRepository gr = gson.fromJson(txtPersistence.buscarGrupos(), GruposRepository.class);
+        UsuarioRepository ur = gson.fromJson(drivePersistence.buscarUsuarios(), UsuarioRepository.class);
+        Usuario usuario = null;
+        for (Usuario u : ur.usuarios) {
+            if(u.getId() == idUsuario){
+                usuario = u;
+                break;
+            }
+        }
+        for (Grupo g : gr.grupos) {
+            if(g.getId() == idGrupo){
+                g.addUsuario(usuario);
+                break;
+            }
+        }
+        txtPersistence.atualizarGrupos(convertGruposToJson(gr));
     }
 
     @Override
@@ -73,10 +89,10 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
 
     @Override
     public Usuario buscarUsuario(long idUsuario) throws RemoteException {
-        Usuario user  = null;
-        for(Usuario u : listarUsuarios()){
-            if(u.getId() == idUsuario){
-                user =  u;
+        Usuario user = null;
+        for (Usuario u : listarUsuarios()) {
+            if (u.getId() == idUsuario) {
+                user = u;
                 break;
             }
         }
@@ -84,28 +100,68 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
     }
 
     @Override
-    public void salvarMensagem(Long idGrupo, Mensagem mensagem) {
-       
-    }
-    
-    @Override
-    public void salvarGrupo(Grupo grupo) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public void salvarNotificacaoDeUsuario(String token, List<Mensagem> mensagens) {
-        try {
-            Notificacao notificacao = new Notificacao();
-            notificacao.setMensagens(mensagens);
-            String notificacaoString = convertNotificaoToJson(notificacao);
-            txtPersistence.salvarNotificacao(token, notificacaoString);
-            dropPersistence.salvarNotificacao(token, notificacaoString);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void salvarMensagem(Mensagem mensagem)throws RemoteException{
+        MensagensRepository mr = convertJsonToMensagens(drivePersistence.buscarMensagens());
+        mr.addMensagem(mensagem);
+        drivePersistence.salvarMensgens(convertMensagensToJson(mr));
     }
 
+    @Override
+    public void atualizarGrupo(Grupo grupo) throws RemoteException {
+        GruposRepository gruposRepository = convertJsonToGrupos(drivePersistence.buscarGrupos());
+        List<Grupo> grupos = gruposRepository.grupos;
+        int indice = 0;
+        for (int i = 0; i < grupos.size(); i++) {
+            if (grupos.get(i).getId() == grupo.getId()) {
+                indice = i;
+                break;
+            }
+        }
+        grupos.remove(indice);
+        grupos.add(grupo);
+        drivePersistence.atualizarGrupos(convertGruposToJson(gruposRepository));
+    }
+
+    @Override
+    public void salvarNotificacaoDeUsuario(Notificacao notificacao) throws RemoteException {
+        NotificacaoRepository nr = convertJsonToNotificacoes(txtPersistence.buscarNotificacoes());
+        nr.addNotificacao(notificacao);
+        txtPersistence.salvarNotificacoes(convertNotificoesToJson(nr));
+        dropPersistence.salvarNotificacoes(convertNotificoesToJson(nr));
+    }
+
+    @Override
+    public List<Notificacao> buscarNotificacoes() throws RemoteException {
+        NotificacaoRepository nr = convertJsonToNotificacoes(txtPersistence.buscarNotificacoes());
+        return nr.notificacoes;
+    }
+    
+    @Override
+    public List<Mensagem> buscarNotificacoesDeUsuario(String token) throws RemoteException {
+        NotificacaoRepository nr = convertJsonToNotificacoes(txtPersistence.buscarNotificacoes());
+        Notificacao notificacao = null;
+        for(Notificacao n : nr.notificacoes){
+            if(n.getToken() == token){
+                notificacao = n;
+            }
+        }
+        return notificacao.getMensagens();
+    }    
+    
+    @Override
+    public void removerNotificacao(String token) throws RemoteException {
+        NotificacaoRepository nr = convertJsonToNotificacoes(txtPersistence.buscarNotificacoes());
+        Notificacao notificacao = null;
+        for(Notificacao n : nr.notificacoes){
+            if(n.getToken() == token){
+                notificacao = n;
+            }
+        }
+        nr.notificacoes.remove(notificacao);
+        txtPersistence.salvarNotificacoes(convertNotificoesToJson(nr));
+        dropPersistence.salvarNotificacoes(convertNotificoesToJson(nr));
+    }
+    
     private Persistence getDrivePersistence() {
         try {
             Registry registry = LocateRegistry.getRegistry(10990);

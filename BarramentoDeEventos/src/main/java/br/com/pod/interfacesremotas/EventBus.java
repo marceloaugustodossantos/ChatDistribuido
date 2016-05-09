@@ -18,6 +18,6 @@ public interface EventBus extends Remote {
 
     public void publish(long idGrupo, Mensagem mensagem)throws RemoteException;
 
-    public void subscribe(long idGrupo, Usuario Usuario)throws RemoteException;
+    public void subscribe(long idGrupo, Long idUsuario)throws RemoteException;
 
 }

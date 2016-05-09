@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.pod.interfacesremotas;
+package br.com.pod.serverapp;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -14,18 +14,20 @@ import java.util.Date;
  *
  * @author Marcelo Augusto
  */
-public class Mensagem implements Serializable{
+public class Mensagem implements Serializable {
 
     private long id;
     private long idUsuario;
-private String mensagem;
+    private long idGrupo;
+    private String mensagem;
     private Date data;
 
-    public Mensagem(long id, long idUsuario, String mensagem, Date data) {
+    public Mensagem(long id, long idUsuario, long idGrupo, String mensagem, Date data) {
         this.id = id;
         this.idUsuario = idUsuario;
         this.mensagem = mensagem;
         this.data = data;
+        this.idGrupo = idGrupo;
     }
 
     public long getId() {
@@ -60,6 +62,14 @@ private String mensagem;
         this.data = data;
     }
 
+    public long getIdGrupo() {
+        return idGrupo;
+    }
+
+    public void setIdGrupo(long idGrupo) {
+        this.idGrupo = idGrupo;
+    }
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -85,5 +95,11 @@ private String mensagem;
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Mensagem{" + "id=" + id + ", idUsuario=" + idUsuario + ", idGrupo=" + idGrupo + ", mensagem=" + mensagem + ", data=" + data + '}';
+    }
+    
 
 }

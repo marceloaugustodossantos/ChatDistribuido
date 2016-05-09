@@ -1,0 +1,1 @@
+{"grupos":[{"id":1,"nome":"Grupo W","usuarios":[]},{"id":1,"nome":"Grupo Y","usuarios":[]},{"id":1,"nome":"Grupo Z","usuarios":[]},{"id":1,"nome":"Grupo x","usuarios":[]}]}

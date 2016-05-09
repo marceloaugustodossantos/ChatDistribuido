@@ -5,6 +5,9 @@
  */
 package br.com.pod.interfacesremotas;
 
+import br.com.pod.serverapp.Usuario;
+import br.com.pod.serverapp.Grupo;
+import br.com.pod.serverapp.Mensagem;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,8 @@ public interface ServerApp {
 
     public void salvarInscricaoDeUsuarioEmGrupo(long idGrupo, Long idUsuario) throws RemoteException;
 
-    public void salvarPublicacaoEmGrupo(long idGrupo, Mensagem mensagem) throws RemoteException;
+    public void salvarMensagem(Mensagem mensagem) throws RemoteException;
+    
+    public Usuario buscarUsuario(Long idUsuario)throws RemoteException;
     
 }

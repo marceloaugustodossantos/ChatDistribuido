@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.rmi.RemoteException;
 /**
  *
@@ -22,12 +23,11 @@ import java.rmi.RemoteException;
 public class TXTPersistence implements Persistence {
 
     @Override
-    public void salvarNotificacao(String token, String notificacao) throws RemoteException {
+    public void salvarNotificacoes(String notificacoes) throws RemoteException {
         try {
-            File arquivo = new File("src/main/resources/tokens/" + token + ".txt");
+            File arquivo = new File("src/main/resources/repository/notificacoes.txt");
             BufferedWriter bf = new BufferedWriter(new PrintWriter(new FileWriter(arquivo, true), true));
-            bf.write(notificacao);
-            bf.newLine();
+            bf.write(notificacoes);
             bf.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -35,10 +35,10 @@ public class TXTPersistence implements Persistence {
     }
 
     @Override
-    public String buscarNotificacoesDeUsuario(String token) throws RemoteException {        
+    public String buscarNotificacoes() throws RemoteException {        
         String result = null;
         try {
-            File arquivo = new File("src/main/resources/tokens/" + token + ".txt");
+            File arquivo = new File("src/main/resources/repository/notificacoes.txt");
             BufferedReader br = new BufferedReader(new FileReader(arquivo));
             result = br.readLine();
             br.close();
@@ -55,7 +55,7 @@ public class TXTPersistence implements Persistence {
     public String buscarGrupos() throws RemoteException {
         String result = null;
         try {
-            File arquivo = new File("src/main/resources/tokens/grupos.txt");
+            File arquivo = new File("src/main/resources/repository/grupos.txt");
             BufferedReader br = new BufferedReader(new FileReader(arquivo));
             result = br.readLine();
             br.close();
@@ -65,6 +65,21 @@ public class TXTPersistence implements Persistence {
             ex.printStackTrace();
         }
         return result;
+    }
+    
+    public void atualizarGrupos(String gruposGson)throws RemoteException{
+        try {
+            File gruposAntigos = new File("src/main/resources/repository/grupos.txt");
+            gruposAntigos.delete();
+            File gruposAtualizados = new File("src/main/resources/repository/grupos.txt");
+            BufferedWriter bw = new BufferedWriter(new PrintWriter(new FileWriter(gruposAtualizados, true), true));
+            bw.write(gruposGson);
+            bw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -78,13 +93,13 @@ public class TXTPersistence implements Persistence {
     }
 
     @Override
-    public String buscarUsuarios(String url) throws RemoteException {
+    public String buscarUsuarios() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String salvarUsuarios(String usuariosJson) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }  
+    } 
 
 }
