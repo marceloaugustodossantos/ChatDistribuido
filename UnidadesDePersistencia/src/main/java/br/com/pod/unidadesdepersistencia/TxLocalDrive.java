@@ -5,6 +5,7 @@
  */
 package br.com.pod.unidadesdepersistencia;
 
+import br.com.pod.interfacesremotas.Persistence;
 import br.com.pod.interfacesremotas.TxLocal;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -15,21 +16,30 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class TxLocalDrive extends UnicastRemoteObject implements TxLocal{
 
-    public TxLocalDrive ()throws RemoteException{}
+    private Persistence persistence;
+    private String usuarios;
+    private String mensagens;
+    
+    public TxLocalDrive (DrivePersistence persistence) throws RemoteException{
+        this.persistence = persistence;
+    }
     
     @Override
     public void prepare() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.usuarios = persistence.buscarUsuarios();
+        this.mensagens = persistence.buscarMensagens();
     }
 
     @Override
     public void commit() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.usuarios = null;
+        this.mensagens = null;
     }
 
     @Override
     public void rollback() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persistence.salvarMensgens(mensagens);
+        persistence.salvarUsuarios(usuarios);
     }
     
 }

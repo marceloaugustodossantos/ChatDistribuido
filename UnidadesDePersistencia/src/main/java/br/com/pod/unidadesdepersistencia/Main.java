@@ -18,18 +18,20 @@ public class Main {
     
     public static void main(String[] args) throws RemoteException, AlreadyBoundException{
         
+        System.out.println("Persistence e TxLocal");
+        
         DrivePersistence drivePersistence = new DrivePersistence();
         DropBoxPersistence dropBoxPersistence = new DropBoxPersistence();
         TXTPersistence tXTPersistence = new TXTPersistence();
-        Registry registryPersistence = LocateRegistry.createRegistry(10990);
+        Registry registryPersistence = LocateRegistry.createRegistry(8094);
         registryPersistence.bind("DrivePersistence", drivePersistence);
         registryPersistence.bind("TXTPersistence", tXTPersistence);
         registryPersistence.bind("DropboxPersistence", dropBoxPersistence);
         
-        TxLocalDrive txLocalDrive = new TxLocalDrive();
-        TxLocalDropbox txLocalDropbox = new TxLocalDropbox();
-        TxLocalTXT txLocalTXT = new TxLocalTXT();
-        Registry registryTXLocal = LocateRegistry.createRegistry(10991);
+        TxLocalDrive txLocalDrive = new TxLocalDrive(drivePersistence);
+        TxLocalDropbox txLocalDropbox = new TxLocalDropbox(dropBoxPersistence);
+        TxLocalTXT txLocalTXT = new TxLocalTXT(tXTPersistence);
+        Registry registryTXLocal = LocateRegistry.createRegistry(8096);
         registryTXLocal.bind("TxLocalDrive", txLocalDrive);
         registryTXLocal.bind("TxLocalTXT", txLocalTXT);
         registryTXLocal.bind("TxLocalDropbox", txLocalDropbox);

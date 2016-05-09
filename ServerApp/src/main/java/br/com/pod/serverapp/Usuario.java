@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.pod.gerenciadordepersistencia;
+package br.com.pod.serverapp;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -28,10 +28,6 @@ public class Usuario implements Serializable{
         this.email = email;
         this.ip = ip;
         this.port = port;
-    }
-
-    Usuario() {
-
     }
 
     public long getId() {
@@ -98,11 +94,6 @@ public class Usuario implements Serializable{
             return false;
         }
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" + "id=" + id + ", nome=" + nome + ", email=" + email + ", ip=" + ip + ", port=" + port + '}';
     }
      
 }

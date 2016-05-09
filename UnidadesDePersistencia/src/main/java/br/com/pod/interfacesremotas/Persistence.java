@@ -17,17 +17,19 @@ import java.util.Map;
 public interface Persistence extends Remote {
 
     public String buscarMensagens() throws RemoteException;
-    
+
     public void salvarMensgens(String mensagensJson) throws RemoteException;
-    
-    public String buscarUsuarios(String url) throws RemoteException;
-    
+
+    public String buscarUsuarios() throws RemoteException;
+
     public String salvarUsuarios(String usuariosJson) throws RemoteException;
-    
-    public void salvarNotificacao(String token, String notificacao) throws RemoteException;
-    
-    public String buscarNotificacoesDeUsuario(String token) throws RemoteException;
-    
+
+    public void salvarNotificacoes(String notificacoes) throws RemoteException;
+
+    public String buscarNotificacoes() throws RemoteException;
+
     public String buscarGrupos() throws RemoteException;
-    
+
+    public void atualizarGrupos(String gruposGson) throws RemoteException;
+
 }

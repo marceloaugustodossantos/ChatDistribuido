@@ -8,18 +8,17 @@ package br.com.pod.serverapp;
 import br.com.pod.interfacesremotas.CoordenadorTransacao;
 import br.com.pod.interfacesremotas.PersistenceMenager;
 import br.com.pod.interfacesremotas.ServerApp;
-import br.com.pod.interfacesremotas.Grupo;
-import br.com.pod.interfacesremotas.Mensagem;
-import br.com.pod.interfacesremotas.Usuario;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -76,10 +75,13 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
     }
 
     private Map<Long, Usuario> listarUsuarios() {
-        Map<Long, Usuario> usuarios = null;
+        Map<Long, Usuario> usuarios = new HashMap<>();
         try {
             coorCoordenadorTransacao.prepareAll();
-            usuarios = persistenceMenager.listarUsuarios();
+            List<Usuario> usuariosList = persistenceMenager.listarUsuarios();
+            for (Usuario u : usuariosList) {
+                usuarios.put(u.getId(), u);
+            }
             coorCoordenadorTransacao.commitAll();
         } catch (RemoteException e) {
             try {
@@ -89,6 +91,11 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
             }
         }
         return usuarios;
+    }
+    
+    @Override
+    public Usuario buscarUsuario(Long idUsuario) throws RemoteException {
+        return usuarios.get(idUsuario);
     }
 
     @Override
@@ -142,12 +149,29 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
     }
 
     @Override
-    public void salvarPublicacaoEmGrupo(long idGrupo, Mensagem mensagem) throws RemoteException {
+    public void salvarMensagem(Mensagem mensagem) throws RemoteException {
         try {
             coorCoordenadorTransacao.prepareAll();
-            persistenceMenager.salvarMensagem(idGrupo, mensagem);
+            persistenceMenager.salvarMensagem(mensagem);
+            Set<Long> ids = usuarios.keySet();
+            for (Long idUsuario : ids) {
+                Notificacao notificacao = new Notificacao();
+                notificacao.setId(System.currentTimeMillis());
+                String token = "" + System.currentTimeMillis();
+                notificacao.setToken(token);
+                notificacao.setIdUsuario(idUsuario);
+                List<Mensagem> msgs = new ArrayList<>();
+                if (usuariosLogados.containsKey(idUsuario)) {
+                    msgs.add(mensagem);
+                    notificacao.setMensagens(msgs);
+                }else{
+                    msgs = getNotificacoesDeUsuario(idUsuario).getMensagens();
+                    msgs.add(mensagem);
+                    notificacao.setMensagens(msgs);
+                }
+                persistenceMenager.salvarNotificacaoDeUsuario(notificacao);
+            }
             coorCoordenadorTransacao.commitAll();
-            grupos.get(idGrupo).addMensagem(mensagem);
         } catch (RemoteException e) {
             try {
                 coorCoordenadorTransacao.rollbackAll();
@@ -159,25 +183,27 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
 
     @Override
     public String getTokenNotificationUser(Long idUsuario) throws RemoteException {
-        try {
-            coorCoordenadorTransacao.prepareAll();
-            String token = "" + System.currentTimeMillis();
-            List<Mensagem> mensagens = getMensagensDeUsuario(idUsuario);
-            persistenceMenager.salvarNotificacaoDeUsuario(token, mensagens);
-            coorCoordenadorTransacao.commitAll();
-            return token;
-        } catch (RemoteException e) {
-            try {
-                coorCoordenadorTransacao.rollbackAll();
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return null;
+        Notificacao notificacao = getNotificacoesDeUsuario(idUsuario);
+        String token = notificacao.getToken();
+        persistenceMenager.removerNotificacao(notificacao.getToken());           
+        return token;
     }
 
-    private List<Mensagem> getMensagensDeUsuario(Long idUsuario) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private Notificacao getNotificacoesDeUsuario(Long idUsuario) {
+        Notificacao notificacao = null;
+        try{
+            coorCoordenadorTransacao.prepareAll();
+            List<Notificacao> notificacoes = persistenceMenager.buscarNotificacoes();
+            for (Notificacao n : notificacoes) {
+                if(n.getIdUsuario() == idUsuario){
+                    notificacao = n;
+                    break;
+                }
+            }
+        }  catch(RemoteException e){
+            e.printStackTrace();
+        } 
+        return notificacao;
     }
 
     private Usuario getUsuarioPorEmail(String email) {

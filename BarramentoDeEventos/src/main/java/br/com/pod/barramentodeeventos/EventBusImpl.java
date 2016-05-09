@@ -1,4 +1,3 @@
-
 package br.com.pod.barramentodeeventos;
 
 import br.com.pod.interfacesremotas.EventBus;
@@ -14,6 +13,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.RemoteObject;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,34 +24,28 @@ import java.util.logging.Logger;
  */
 public class EventBusImpl extends UnicastRemoteObject implements EventBus {
 
-    Map<Long, Grupo> grupos = new HashMap<Long, Grupo>();
+    Map<Long, Grupo> grupos = null;
     private static ReceivingNotify receivingNotify = getReceivingNotify();
     private ServerApp serverApp = getServerApp();
 
     public EventBusImpl() throws RemoteException {
         super();
+        grupos = buscarGruposMap();
         TaskMenager manager = new TaskMenager(this);
         manager.start();
     }
 
     @Override
-    public void subscribe(long idGrupo, Usuario usuario) {
-        try {
-            grupos.get(idGrupo).addUsuario(usuario);
-            serverApp.salvarInscricaoDeUsuarioEmGrupo(idGrupo, usuario);
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
-        }
+    public void subscribe(long idGrupo, Long idUsuario) throws RemoteException {
+        Usuario usuario = serverApp.buscarUsuario(idUsuario);
+        grupos.get(idGrupo).addUsuario(usuario);
+        serverApp.salvarInscricaoDeUsuarioEmGrupo(idGrupo, idUsuario);
     }
 
     @Override
-    public void publish(long idGrupo, Mensagem mensagem) {
-        try {
-            grupos.get(idGrupo).addMensagem(mensagem);
-            serverApp.salvarPublicacaoEmGrupo(idGrupo, mensagem);
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
-        }
+    public void publish(long idGrupo, Mensagem mensagem) throws RemoteException {
+        grupos.get(idGrupo).addMensagem(mensagem);
+        serverApp.salvarMensagem(mensagem);
     }
 
     public static void notify(Usuario usuario, String token) {
@@ -82,6 +76,20 @@ public class EventBusImpl extends UnicastRemoteObject implements EventBus {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Map<Long, Grupo> buscarGruposMap() {
+        Map<Long, Grupo> gruposMap = null;
+        try {
+            List<Grupo> gruposList = serverApp.listarGruposExistentes();
+            for (Grupo g : gruposList) {
+                gruposMap.put(g.getId(), g);
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(EventBusImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return gruposMap;
+
     }
 
 }

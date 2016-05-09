@@ -3,31 +3,40 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.pod.interfacesremotas;
+package br.com.pod.serverapp;
 
+import com.sun.javafx.beans.IDProperty;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  *
  * @author Marcelo Augusto
  */
-public class Usuario implements Serializable{
-
+public class Grupo implements Serializable{
+    
     private long id;
     private String nome;
-    private String email;
-    private String ip;
-    private int port;
+    private List<Usuario> usuarios; 
+    private List<Mensagem> mensagens;
 
-    public Usuario(long id, String nome, String email, String ip, int port) {
+    public Grupo(long id, String nome) {
         this.id = id;
         this.nome = nome;
-        this.email = email;
-        this.ip = ip;
-        this.port = port;
+        this.usuarios = new ArrayList<>();
+        this.mensagens = new ArrayList<>();
+    }
+    
+    public void addUsuario(Usuario usuario){
+        this.usuarios.add(usuario);
+    }
+    
+    public void addMensagem(Mensagem mensagem){
+        this.mensagens.add(mensagem);
     }
 
     public long getId() {
@@ -46,35 +55,28 @@ public class Usuario implements Serializable{
         this.nome = nome;
     }
 
-    public String getEmail() {
-        return email;
+    public List<Usuario> getUsuarios() {
+        return usuarios;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
     }
 
-    public String getIp() {
-        return ip;
+
+    public List<Mensagem> getMensagens() {
+        return mensagens;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
+    public void setMensagens(List<Mensagem> mensagens) {
+        this.mensagens = mensagens;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + (int) (this.id ^ (this.id >>> 32));
-        hash = 47 * hash + Objects.hashCode(this.email);
+        int hash = 5;
+        hash = 71 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 71 * hash + Objects.hashCode(this.nome);
         return hash;
     }
 
@@ -86,14 +88,14 @@ public class Usuario implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Usuario other = (Usuario) obj;
+        final Grupo other = (Grupo) obj;
         if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.email, other.email)) {
+        if (!Objects.equals(this.nome, other.nome)) {
             return false;
         }
         return true;
     }
-     
+    
 }

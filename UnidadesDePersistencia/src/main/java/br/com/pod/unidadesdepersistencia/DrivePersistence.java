@@ -63,12 +63,13 @@ public class DrivePersistence implements Persistence {
     }
 
     //recebe uma lista com todas as mensagens no formato json
+    @Override
     public String buscarMensagens() throws RemoteException {
         String result = "";
         try {
             java.io.File parentDir = new java.io.File("src/main/resources/temp/");
             File fileMetadata = new File();
-            fileMetadata.setTitle("teste2.txt");
+            fileMetadata.setTitle("mensagens.txt");
             OutputStream out = new FileOutputStream(new java.io.File(parentDir, fileMetadata.getTitle()));
 
             MediaHttpDownloader downloader
@@ -125,20 +126,20 @@ public class DrivePersistence implements Persistence {
     }
     
     //retorna uma lista com todos os usuarios no formato json
-    public String buscarUsuarios(String url) throws RemoteException{
+    public String buscarUsuarios() throws RemoteException{
         String result = "";
         try {
             java.io.File parentDir = new java.io.File("src/main/resources/temp/");
             File fileMetadata = new File();
-            fileMetadata.setTitle("teste2.txt");
+            fileMetadata.setTitle("usuarios.txt");
             OutputStream out = new FileOutputStream(new java.io.File(parentDir, fileMetadata.getTitle()));
 
             MediaHttpDownloader downloader
                     = new MediaHttpDownloader(httpTransport, drive.getRequestFactory().getInitializer());
             downloader.setDirectDownloadEnabled(true);
-            downloader.download(new GenericUrl(url), out);
+            downloader.download(new GenericUrl(recuperarPropriedadesDeAcessoMensagens(ENTIDADE_USUARIOS)[1]), out);
 
-            java.io.File arquivo = new java.io.File("src/main/resources/temp/mensagens.txt");
+            java.io.File arquivo = new java.io.File("src/main/resources/temp/usuarios.txt");
             BufferedReader br = new BufferedReader(new FileReader(arquivo));
             result = br.readLine();
             br.close();
@@ -155,9 +156,9 @@ public class DrivePersistence implements Persistence {
              deleteFile(usuariosJson); //excluir mensagens antigas
 
             File fileMetadata = new File();
-            fileMetadata.setTitle("mensagens.txt");
+            fileMetadata.setTitle("usuarios.txt");
 
-            java.io.File fileMenssages = new java.io.File("/src/main/resources/temp/mensagens.txt");
+            java.io.File fileMenssages = new java.io.File("/src/main/resources/temp/usuarios.txt");
             BufferedWriter bf = new BufferedWriter(new PrintWriter(new FileWriter(fileMenssages, true), true));
             bf.write(usuariosJson);
             bf.close();
@@ -196,9 +197,9 @@ public class DrivePersistence implements Persistence {
     private void salvarPropriedadesDeAcessoMensagens(int tipoEntidade, String id, String url) {
         String path;
         if (tipoEntidade == ENTIDADE_MENSAGENS) {
-            path = "src/main/resources/tokens/PropAcessMsgs.txt";
+            path = "src/main/resources/repository/PropAcessMsgs.txt";
         } else {
-            path = "src/main/resources/tokens/PropAcessUsers.txt";
+            path = "src/main/resources/repository/PropAcessUsers.txt";
         }
         try {
             java.io.File arquivoAntigo = new java.io.File(path);
@@ -217,9 +218,9 @@ public class DrivePersistence implements Persistence {
     private String[] recuperarPropriedadesDeAcessoMensagens(int tipoEntidade) {
         String path;
         if (tipoEntidade == ENTIDADE_MENSAGENS) {
-            path = "src/main/resources/tokens/PropAcessMsgs.txt";
+            path = "src/main/resources/repository/PropAcessMsgs.txt";
         } else {
-            path = "src/main/resources/tokens/PropAcessUsers.txt";
+            path = "src/main/resources/repository/PropAcessUsers.txt";
         }
         try {
             java.io.File arquivo = new java.io.File(path);
@@ -238,17 +239,22 @@ public class DrivePersistence implements Persistence {
     }
 
     @Override
-    public void salvarNotificacao(String token, String notificacao) throws RemoteException {
+    public void salvarNotificacoes(String notificacao) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public String buscarNotificacoesDeUsuario(String token) throws RemoteException {
+    public String buscarNotificacoes() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String buscarGrupos() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void atualizarGrupos(String gruposGson) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

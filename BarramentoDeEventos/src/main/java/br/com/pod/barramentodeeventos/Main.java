@@ -5,11 +5,6 @@
  */
 package br.com.pod.barramentodeeventos;
 
-import br.com.pod.interfacesremotas.EventBus;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -23,7 +18,7 @@ public class Main {
     
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {       
         System.out.println("Barramento de eventos");
-        Registry registry = LocateRegistry.createRegistry(8081);
+        Registry registry = LocateRegistry.createRegistry(8091);
         registry.bind("EventBus", new EventBusImpl());
     }
 

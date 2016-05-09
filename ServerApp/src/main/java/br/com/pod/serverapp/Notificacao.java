@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.pod.gerenciadordepersistencia;
+package br.com.pod.serverapp;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -59,6 +59,7 @@ public class Notificacao implements Serializable {
     public void setIdUsuario(long idUsuario) {
         this.idUsuario = idUsuario;
     }
+    
 
     @Override
     public int hashCode() {
@@ -84,9 +85,8 @@ public class Notificacao implements Serializable {
 
     @Override
     public String toString() {
-        return "Notificacao{" + "id=" + id + ", idUsuario=" + idUsuario + ", token=" + token + ", mensagens=" + mensagens + '}';
+        return "Notificacao{" + "id=" + id + ", token=" + token + ", mensagens=" + mensagens + '}';
     }
-
     
 
 }

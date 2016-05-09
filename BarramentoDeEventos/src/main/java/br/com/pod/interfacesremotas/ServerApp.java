@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface ServerApp extends Remote {
     
-    public void login(long idUsuario) throws RemoteException;
+     public void login(String email) throws RemoteException;
 
     public void logout(long idUsuario) throws RemoteException;
     
@@ -26,12 +26,14 @@ public interface ServerApp extends Remote {
 
     public List<Grupo> listarGruposExistentes() throws RemoteException;
 
-    public List<Grupo> listarGruposDeUsuario(Usuario usuario) throws RemoteException;
+    public List<Grupo> listarGruposDeUsuario(Long idUsuario) throws RemoteException;
         
-    public String getTokenNotificationUser (Usuario usuario) throws RemoteException;
+    public String getTokenNotificationUser (Long idUsuario) throws RemoteException;
 
-    public void salvarInscricaoDeUsuarioEmGrupo(long idGrupo, Usuario usuario) throws RemoteException;
+    public void salvarInscricaoDeUsuarioEmGrupo(long idGrupo, Long idUsuario) throws RemoteException;
 
-    public void salvarPublicacaoEmGrupo(long idGrupo, Mensagem mensagem) throws RemoteException;
+    public void salvarMensagem(Mensagem mensagem) throws RemoteException;
+
+    public Usuario buscarUsuario(Long idUsuario)throws RemoteException;
 
 }

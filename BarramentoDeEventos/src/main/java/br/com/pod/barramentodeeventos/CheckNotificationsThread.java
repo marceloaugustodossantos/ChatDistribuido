@@ -36,7 +36,7 @@ public class CheckNotificationsThread extends Thread {
     private void checkNotifications() {
         try {
             //verifica o token de acesso as notificações deste usuário caso exista alguma
-            String token = serverApp.getTokenNotificationUser(usuario);
+            String token = serverApp.getTokenNotificationUser(usuario.getId());
             if (token != null) {
                 EventBusImpl.notify(usuario, token);
             }

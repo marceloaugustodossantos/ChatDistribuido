@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,14 +34,14 @@ public class DropBoxPersistence implements Persistence {
     private final String ACESS_TOKEN = "Ylhv3F2UgGAAAAAAAAAAB5-2R6H_9ePNXfD54g8dny42v7H7JdyYGSTaB-h22kOW";
 
     @Override
-    public void salvarNotificacao(String token, String notificacao) throws RemoteException {
+    public void salvarNotificacoes(String notificacoesJson) throws RemoteException {
         try {
             DbxRequestConfig config = new DbxRequestConfig("chat-pod", null);
             DbxClient client = new DbxClient(config, ACESS_TOKEN);
             
-            File file = new File("/src/main/resources/tokens/"+token+".txt");
+            File file = new File("/src/main/resources/tokens/notificacoes.txt");
             BufferedWriter bf = new BufferedWriter(new PrintWriter(new FileWriter(file, true), true));
-            bf.write(notificacao);
+            bf.write(notificacoesJson);
             InputStream is = new FileInputStream(file);
             
             client.uploadFile("/Notificacoes/" + file.getName(), DbxWriteMode.add(), is.available(), is);
@@ -59,15 +57,15 @@ public class DropBoxPersistence implements Persistence {
     }
 
     @Override
-    public String buscarNotificacoesDeUsuario(String token) throws RemoteException {
+    public String buscarNotificacoes() throws RemoteException {
         String result = "";
         try {
             DbxRequestConfig config = new DbxRequestConfig("chat-pod", null);
             DbxClient client = new DbxClient(config, ACESS_TOKEN);
-            FileOutputStream outputStream = new FileOutputStream("src/main/resources/temp/"+token+".txt");
-            client.getFile("/Notificacoes/"+token+".txt", null, outputStream);
-            client.delete ("/Notificacoes/"+token+".txt");
-            File arquivo = new File("src/main/resources/temp/"+token+".txt");
+            FileOutputStream outputStream = new FileOutputStream("src/main/resources/temp/notificacoes.txt");
+            client.getFile("/Notificacoes/notificacoes.txt", null, outputStream);
+            client.delete ("/Notificacoes/notificacoes.txt");
+            File arquivo = new File("src/main/resources/temp/notificacoes.txt");
             BufferedReader br = new BufferedReader(new FileReader(arquivo));
             result = br.readLine();
             outputStream.close();
@@ -80,7 +78,7 @@ public class DropBoxPersistence implements Persistence {
         }
         return result;
     }
-
+    
     @Override
     public String buscarMensagens() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -92,7 +90,7 @@ public class DropBoxPersistence implements Persistence {
     }
 
     @Override
-    public String buscarUsuarios(String url) throws RemoteException {
+    public String buscarUsuarios() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -103,6 +101,11 @@ public class DropBoxPersistence implements Persistence {
 
     @Override
     public String buscarGrupos() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void atualizarGrupos(String gruposGson) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
