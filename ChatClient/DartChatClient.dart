@@ -60,13 +60,12 @@ void logout() {
 getMessages() {
   var resp;
   var response;
-  server.write("getmessages:");
+  server.write("getmessages:" + id);
   server.listen((data) {
     resp = new String.fromCharCodes(data).trim();
-    response = resp.split("/");
   });
   print("Mensagens Recebidas: \n");
-  response.forEach((r) => print(r));
+  resp.forEach((r) => print(r));
 }
 
 //<publish>:<id>:<grupo>:<message>
