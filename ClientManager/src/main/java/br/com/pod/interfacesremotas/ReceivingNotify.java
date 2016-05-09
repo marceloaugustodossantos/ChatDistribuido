@@ -10,5 +10,5 @@ import java.rmi.RemoteException;
  */
 public interface ReceivingNotify extends Remote{
     
-    public void receberNotificacao(String notificacao)throws RemoteException,NotBoundException;  
+    public void receberNotificacao(long idUsuario, String notificacao)throws RemoteException,NotBoundException;  
 }

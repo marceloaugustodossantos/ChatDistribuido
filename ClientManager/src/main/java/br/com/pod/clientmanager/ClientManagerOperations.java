@@ -2,7 +2,7 @@ package br.com.pod.clientmanager;
 
 import br.com.pod.dao.DAO;
 import br.com.pod.interfacesremotas.EventBus;
-import br.com.pod.interfacesremotas.PersistenceUnit;
+import br.com.pod.interfacesremotas.PersistenceMenager;
 import br.com.pod.interfacesremotas.ServerApp;
 import br.com.pod.objetosremotos.Grupo;
 import br.com.pod.objetosremotos.Mensagem;
@@ -13,6 +13,7 @@ import br.com.pod.rmi.ClientRMI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,10 +26,11 @@ public class ClientManagerOperations {
     ClientRMI client;
     EventBus eventBus;
     ServerApp serverApp;
-    PersistenceUnit persistentUnit;
+    PersistenceMenager persistenceMenager;
     ReceivingNotifyImpl notification;
-    List<Mensagem> mensagens;
+    Map<Long, List<Mensagem>> mensagens;
     DAO<Object> dao;
+    
     public ClientManagerOperations() {
 
     }
@@ -84,8 +86,7 @@ public class ClientManagerOperations {
 
     public void subscribe(long idUser, long idGroup) {
         try {
-            Usuario usuario = serverApp.getUsuario(idUser);
-            eventBus.subscribe(idGroup, usuario);
+            eventBus.subscribe(idGroup, idUser);
         } catch (RemoteException ex) {
             Logger.getLogger(ClientManagerOperations.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -116,10 +117,9 @@ public class ClientManagerOperations {
         return response;
     }
 
-    public String getMessages() {
-        ThreadMessages threadMessages = new ThreadMessages(notification.getToken());
-        threadMessages.run();
-        String response = formatterForMessages(mensagens);
+    public String getMessages(long idUsuario) {
+        List<Mensagem> msg = mensagens.get(idUsuario);
+        String response = formatterForMessages(msg);
         return response;
     }
 
@@ -127,7 +127,7 @@ public class ClientManagerOperations {
     static String formatterForGroups(List<Grupo> grupos) {
         String result = "";
         for (Grupo g : grupos) {
-            result += g.getId() + "-" + g.getNome() + "/";
+            result += g.getId() + "-" + g.getNome() + "\n";
         }
         return result;
     }
@@ -136,7 +136,7 @@ public class ClientManagerOperations {
     static String formatterForMessages(List<Mensagem> mensagens) {
         String result = "";
         for (Mensagem m : mensagens) {
-            result += m.getData() + "-" + m.getIdGrupo() + "-" + m.getMensagem() + "/";
+            result += m.getData() + "-" + m.getIdGrupo() + "-" + m.getMensagem() + "\n";
         }
         return result;
     }

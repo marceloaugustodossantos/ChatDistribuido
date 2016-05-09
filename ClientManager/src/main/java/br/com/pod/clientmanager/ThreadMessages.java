@@ -5,26 +5,35 @@
  */
 package br.com.pod.clientmanager;
 
-
-import br.com.pod.interfacesremotas.PersistenceUnit;
+import br.com.pod.interfacesremotas.PersistenceMenager;
+import br.com.pod.objetosremotos.Mensagem;
+import br.com.pod.objetosremotos.Notificacao;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Pris
  */
-public class ThreadMessages {
-    
+public class ThreadMessages extends Thread {
+
     String token;
-    PersistenceUnit persistenceUnit;
-    ClientManagerOperations operations;
+    PersistenceMenager persistenceMenager;
+    ReceivingNotifyImpl notify;
+    
     
     public ThreadMessages(String token) {
         this.token = token;
-        operations.mensagens = new ArrayList<>();
     }
-    
-    public void run(){
-        operations.mensagens = persistenceUnit.getMensagens(token);
+
+    public void run() {
+        try {
+            notify.setMensagens(persistenceMenager.buscarNotificacoesDeUsuario(token));
+        } catch (RemoteException ex) {
+            Logger.getLogger(ThreadMessages.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -47,7 +47,7 @@ public class ClientManagerSocket {
 //<signin>:<credential>:<name>
 //<login>:<credential>
 //<logout>:<credential>
-//<getmessages>:
+//<getmessages>:<id>
 //<publish>:<idUser>:<idGroup>:<message>
 //<subscribe>:<idUser>:<idGroup>
 //<groupsavailable>
@@ -69,7 +69,7 @@ public class ClientManagerSocket {
                 operations.logout(action[1]);
                 break;
             case "getmessages":{
-                response = operations.getMessages();
+                response = operations.getMessages(Long.parseLong(action[1]));
                 sendToClient(response, client);
                 break;//retorno
             }

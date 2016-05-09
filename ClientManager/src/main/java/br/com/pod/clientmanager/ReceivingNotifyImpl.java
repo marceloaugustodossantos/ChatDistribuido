@@ -17,23 +17,36 @@ public class ReceivingNotifyImpl extends UnicastRemoteObject implements Receivin
 
 //	private ClientRMI clientPersistentUnit;
 //        ClientManagerOperations operations;
-    private String token;
-
+    private List<Mensagem> mensagens;
+    private long idUsuario;
+    ClientManagerOperations operations;
+    
     public ReceivingNotifyImpl() throws RemoteException {
         super();
     }
 
     @Override
-    public void receberNotificacao(String notificacao) throws RemoteException, NotBoundException {
-        this.token = notificacao;
+    public void receberNotificacao(long idUsuario,String notificacao) throws RemoteException, NotBoundException {
+        ThreadMessages threadMessages = new ThreadMessages(notificacao);
+        threadMessages.run();
+        operations.mensagens.put(idUsuario, mensagens);
     }
 
-    public String getToken() {
-        return token;
+    public List<Mensagem> getMensagens() {
+        return mensagens;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setMensagens(List<Mensagem> mensagens) {
+        this.mensagens = mensagens;
     }
 
+    public long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    
 }

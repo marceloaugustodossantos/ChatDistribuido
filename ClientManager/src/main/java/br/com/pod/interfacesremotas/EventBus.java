@@ -17,8 +17,7 @@ import br.com.pod.objetosremotos.Usuario;
  */
 public interface EventBus extends Remote {
 
-    public void publish(long idGrupo, Mensagem msg)throws RemoteException;
+     public void publish(long idGrupo, Mensagem mensagem)throws RemoteException;
 
-    public void subscribe(long idGrupo, Usuario usuario)throws RemoteException;
-
+    public void subscribe(long idGrupo, long idUsuario)throws RemoteException;
 }
