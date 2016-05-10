@@ -18,7 +18,7 @@ public class Main {
     
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {       
         System.out.println("Barramento de eventos");
-        Registry registry = LocateRegistry.createRegistry(8091);
+        Registry registry = LocateRegistry.createRegistry(1236);
         registry.bind("EventBus", new EventBusImpl());
     }
 

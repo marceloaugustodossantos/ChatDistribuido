@@ -59,7 +59,6 @@ public class Notificacao implements Serializable {
     public void setIdUsuario(long idUsuario) {
         this.idUsuario = idUsuario;
     }
-    
 
     @Override
     public int hashCode() {
@@ -85,8 +84,9 @@ public class Notificacao implements Serializable {
 
     @Override
     public String toString() {
-        return "Notificacao{" + "id=" + id + ", token=" + token + ", mensagens=" + mensagens + '}';
+        return "Notificacao{" + "id=" + id + ", idUsuario=" + idUsuario + ", token=" + token + ", mensagens=" + mensagens + '}';
     }
+
     
 
 }

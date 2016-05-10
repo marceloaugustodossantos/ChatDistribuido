@@ -47,13 +47,13 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
         UsuarioRepository ur = gson.fromJson(drivePersistence.buscarUsuarios(), UsuarioRepository.class);
         Usuario usuario = null;
         for (Usuario u : ur.usuarios) {
-            if(u.getId() == idUsuario){
+            if (u.getId() == idUsuario) {
                 usuario = u;
                 break;
             }
         }
         for (Grupo g : gr.grupos) {
-            if(g.getId() == idGrupo){
+            if (g.getId() == idGrupo) {
                 g.addUsuario(usuario);
                 break;
             }
@@ -63,7 +63,9 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
 
     @Override
     public List<Grupo> listarGrupos() throws RemoteException {
-        String gruposString = drivePersistence.buscarGrupos();
+        String gruposString = txtPersistence.buscarGrupos();
+        GruposRepository gr = convertJsonToGrupos(gruposString);
+        System.out.println(gr.toString());
         return convertJsonToGrupos(gruposString).grupos;
     }
 
@@ -84,7 +86,11 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
 
     @Override
     public List<Usuario> listarUsuarios() throws RemoteException {
-        return gson.fromJson(drivePersistence.buscarUsuarios(), UsuarioRepository.class).usuarios;
+        try {
+            return gson.fromJson(drivePersistence.buscarUsuarios(), UsuarioRepository.class).usuarios;
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -100,7 +106,7 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
     }
 
     @Override
-    public void salvarMensagem(Mensagem mensagem)throws RemoteException{
+    public void salvarMensagem(Mensagem mensagem) throws RemoteException {
         MensagensRepository mr = convertJsonToMensagens(drivePersistence.buscarMensagens());
         mr.addMensagem(mensagem);
         drivePersistence.salvarMensgens(convertMensagensToJson(mr));
@@ -135,25 +141,25 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
         NotificacaoRepository nr = convertJsonToNotificacoes(txtPersistence.buscarNotificacoes());
         return nr.notificacoes;
     }
-    
+
     @Override
     public List<Mensagem> buscarNotificacoesDeUsuario(String token) throws RemoteException {
         NotificacaoRepository nr = convertJsonToNotificacoes(txtPersistence.buscarNotificacoes());
         Notificacao notificacao = null;
-        for(Notificacao n : nr.notificacoes){
-            if(n.getToken() == token){
+        for (Notificacao n : nr.notificacoes) {
+            if (n.getToken() == token) {
                 notificacao = n;
             }
         }
         return notificacao.getMensagens();
-    }    
-    
+    }
+
     @Override
     public void removerNotificacao(String token) throws RemoteException {
         NotificacaoRepository nr = convertJsonToNotificacoes(txtPersistence.buscarNotificacoes());
         Notificacao notificacao = null;
-        for(Notificacao n : nr.notificacoes){
-            if(n.getToken() == token){
+        for (Notificacao n : nr.notificacoes) {
+            if (n.getToken() == token) {
                 notificacao = n;
             }
         }
@@ -161,10 +167,10 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
         txtPersistence.salvarNotificacoes(convertNotificoesToJson(nr));
         dropPersistence.salvarNotificacoes(convertNotificoesToJson(nr));
     }
-    
+
     private Persistence getDrivePersistence() {
         try {
-            Registry registry = LocateRegistry.getRegistry(10990);
+            Registry registry = LocateRegistry.getRegistry(1238);
             return (Persistence) registry.lookup("DrivePersistence");
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -174,7 +180,7 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
 
     private Persistence getDropboxPersistence() {
         try {
-            Registry registry = LocateRegistry.getRegistry(10990);
+            Registry registry = LocateRegistry.getRegistry(1238);
             return (Persistence) registry.lookup("DropboxPersistence");
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -184,7 +190,7 @@ public class PersistenceMenagerImpl extends UnicastRemoteObject implements Persi
 
     private Persistence getTxtPersistence() {
         try {
-            Registry registry = LocateRegistry.getRegistry(10990);
+            Registry registry = LocateRegistry.getRegistry(1238);
             return (Persistence) registry.lookup("TXTPersistence");
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();

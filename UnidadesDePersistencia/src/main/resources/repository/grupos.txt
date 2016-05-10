@@ -1,1 +1,1 @@
-{"grupos":[{"id":1,"nome":"Grupo W","usuarios":[]},{"id":1,"nome":"Grupo Y","usuarios":[]},{"id":1,"nome":"Grupo Z","usuarios":[]},{"id":1,"nome":"Grupo x","usuarios":[]}]}
+{"grupos":[{"id":4,"nome":"grupo x","usuarios":[],"mensagens":[]},{"id":3,"nome":"grupo x","usuarios":[],"mensagens":[]},{"id":2,"nome":"grupo x","usuarios":[],"mensagens":[]},{"id":1,"nome":"grupo x","usuarios":[],"mensagens":[]}]}

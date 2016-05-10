@@ -5,6 +5,7 @@
  */
 package br.com.pod.gerenciadordepersistencia;
 
+import com.google.gson.Gson;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -17,8 +18,10 @@ import java.rmi.registry.Registry;
 public class Main {
 
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {
-        Registry registry = LocateRegistry.createRegistry(8095);
+        System.out.println("gerenciador de persistencia");
+        Registry registry = LocateRegistry.createRegistry(1240);
         registry.bind("PersistenceMenager", new PersistenceMenagerImpl());
+ 
     }
 
 }

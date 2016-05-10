@@ -23,7 +23,7 @@ public class Main {
         DrivePersistence drivePersistence = new DrivePersistence();
         DropBoxPersistence dropBoxPersistence = new DropBoxPersistence();
         TXTPersistence tXTPersistence = new TXTPersistence();
-        Registry registryPersistence = LocateRegistry.createRegistry(8094);
+        Registry registryPersistence = LocateRegistry.createRegistry(1238);
         registryPersistence.bind("DrivePersistence", drivePersistence);
         registryPersistence.bind("TXTPersistence", tXTPersistence);
         registryPersistence.bind("DropboxPersistence", dropBoxPersistence);
@@ -31,7 +31,7 @@ public class Main {
         TxLocalDrive txLocalDrive = new TxLocalDrive(drivePersistence);
         TxLocalDropbox txLocalDropbox = new TxLocalDropbox(dropBoxPersistence);
         TxLocalTXT txLocalTXT = new TxLocalTXT(tXTPersistence);
-        Registry registryTXLocal = LocateRegistry.createRegistry(8096);
+        Registry registryTXLocal = LocateRegistry.createRegistry(1239);
         registryTXLocal.bind("TxLocalDrive", txLocalDrive);
         registryTXLocal.bind("TxLocalTXT", txLocalTXT);
         registryTXLocal.bind("TxLocalDropbox", txLocalDropbox);

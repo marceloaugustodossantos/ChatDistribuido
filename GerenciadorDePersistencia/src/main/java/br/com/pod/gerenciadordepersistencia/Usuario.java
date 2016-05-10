@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author Marcelo Augusto
  */
-public class Usuario implements Serializable{
+public class Usuario extends RemoteObject implements Serializable{
 
     private long id;
     private String nome;
@@ -30,7 +30,7 @@ public class Usuario implements Serializable{
         this.port = port;
     }
 
-    Usuario() {
+    public Usuario() throws RemoteException{
 
     }
 
@@ -104,5 +104,7 @@ public class Usuario implements Serializable{
     public String toString() {
         return "Usuario{" + "id=" + id + ", nome=" + nome + ", email=" + email + ", ip=" + ip + ", port=" + port + '}';
     }
+
+    
      
 }

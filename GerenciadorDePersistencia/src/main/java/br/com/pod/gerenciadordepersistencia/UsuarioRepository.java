@@ -23,4 +23,20 @@ public class UsuarioRepository {
     public void addUsuario(Usuario usuario){
         this.usuarios.add(usuario);
     }
+
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    @Override
+    public String toString() {
+        return "UsuarioRepository{" + "usuarios=" + usuarios + '}';
+    }
+    
+    
+    
 }

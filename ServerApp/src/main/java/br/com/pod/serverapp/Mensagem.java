@@ -14,7 +14,7 @@ import java.util.Date;
  *
  * @author Marcelo Augusto
  */
-public class Mensagem implements Serializable {
+public class Mensagem implements Serializable{
 
     private long id;
     private long idUsuario;
@@ -22,14 +22,10 @@ public class Mensagem implements Serializable {
     private String mensagem;
     private Date data;
 
-    public Mensagem(long id, long idUsuario, long idGrupo, String mensagem, Date data) {
-        this.id = id;
-        this.idUsuario = idUsuario;
-        this.mensagem = mensagem;
-        this.data = data;
-        this.idGrupo = idGrupo;
+    public Mensagem() {
     }
 
+    
     public long getId() {
         return id;
     }
@@ -62,14 +58,6 @@ public class Mensagem implements Serializable {
         this.data = data;
     }
 
-    public long getIdGrupo() {
-        return idGrupo;
-    }
-
-    public void setIdGrupo(long idGrupo) {
-        this.idGrupo = idGrupo;
-    }
-
     @Override
     public int hashCode() {
         int hash = 3;
@@ -100,6 +88,6 @@ public class Mensagem implements Serializable {
     public String toString() {
         return "Mensagem{" + "id=" + id + ", idUsuario=" + idUsuario + ", idGrupo=" + idGrupo + ", mensagem=" + mensagem + ", data=" + data + '}';
     }
-    
 
+    
 }

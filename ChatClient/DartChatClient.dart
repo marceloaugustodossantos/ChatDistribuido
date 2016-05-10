@@ -14,19 +14,7 @@ void handleServer(Socket socket) {
     print('Connected to: '
         '${socket.remoteAddress.address}:${socket.remotePort}');
   });
-//  print('Connected to: '
-//      '${socket.remoteAddress.address}:${socket.remotePort}');
-//
-//  print('Mensagem (ENTER para sair): ');
-//  String msg = stdin.readLineSync();
-//  while(!msg.isEmpty){
-//    socket.write(msg + "\n");
-//    print('Mensagem enviada!');
-//    print('Mensagem (ENTER para sair): ');
-//    msg = stdin.readLineSync();
-//  }
-//
-//  socket.close();
+
 }
 
 //<signin>:<credential>:<name>

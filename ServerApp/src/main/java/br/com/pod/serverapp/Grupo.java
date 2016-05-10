@@ -30,6 +30,11 @@ public class Grupo implements Serializable{
         this.usuarios = new ArrayList<>();
         this.mensagens = new ArrayList<>();
     }
+
+    public Grupo() {
+    }
+    
+    
     
     public void addUsuario(Usuario usuario){
         this.usuarios.add(usuario);
@@ -97,5 +102,10 @@ public class Grupo implements Serializable{
         }
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Grupo{" + "id=" + id + ", nome=" + nome + ", usuarios=" + usuarios + ", mensagens=" + mensagens + '}';
+    }
+
 }

@@ -29,6 +29,14 @@ public class GruposRepository {
         grupos.remove(grupo);
     }
 
+    public List<Grupo> getGrupos() {
+        return grupos;
+    }
+
+    public void setGrupos(List<Grupo> grupos) {
+        this.grupos = grupos;
+    }
+
     @Override
     public String toString() {
         return "GruposRepository{" + "grupos=" + grupos + '}';

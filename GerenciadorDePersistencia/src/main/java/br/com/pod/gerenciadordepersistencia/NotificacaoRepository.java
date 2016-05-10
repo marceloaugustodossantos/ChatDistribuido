@@ -23,5 +23,20 @@ public class NotificacaoRepository {
     public void addNotificacao (Notificacao notificacao){
         this.notificacoes.add(notificacao);
     }
+
+    public List<Notificacao> getNotificacoes() {
+        return notificacoes;
+    }
+
+    public void setNotificacoes(List<Notificacao> notificacoes) {
+        this.notificacoes = notificacoes;
+    }
+
+    @Override
+    public String toString() {
+        return "NotificacaoRepository{" + "notificacoes=" + notificacoes + '}';
+    }
+    
+    
     
 }

@@ -23,5 +23,18 @@ public class MensagensRepository {
     public void addMensagem(Mensagem mensagem){
         this.mensagens.add(mensagem);
     }
+
+    public List<Mensagem> getMensagens() {
+        return mensagens;
+    }
+
+    public void setMensagens(List<Mensagem> mensagens) {
+        this.mensagens = mensagens;
+    }
+
+    @Override
+    public String toString() {
+        return "MensagensRepository{" + "mensagens=" + mensagens + '}';
+    }
     
 }

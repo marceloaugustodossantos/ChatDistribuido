@@ -11,27 +11,32 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 /**
  *
  * @author Marcelo Augusto
  */
-public class CoordenadorTransacaoImpl implements CoordenadorTransacao {
+public class CoordenadorTransacaoImpl extends UnicastRemoteObject implements CoordenadorTransacao {
 
+    public CoordenadorTransacaoImpl() throws RemoteException{
+        super();
+    }
+    
     private TxLocal getTxLocalDrive() throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry("localhost", 10991);
+        Registry registry = LocateRegistry.getRegistry("localhost", 1239);
         TxLocal txLocal = (TxLocal) registry.lookup("TxLocalDrive");
         return txLocal;
     }
 
     private TxLocal getTxLocalDropbox() throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry("localhost", 10991);
+        Registry registry = LocateRegistry.getRegistry("localhost", 1239);
         TxLocal txLocal = (TxLocal) registry.lookup("TxLocalDropbox");
         return txLocal;
     }
     
     private TxLocal getTxLocalTXT() throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry("localhost", 10991);
+        Registry registry = LocateRegistry.getRegistry("localhost", 1239);
         TxLocal txLocal = (TxLocal) registry.lookup("TxLocalTXT");
         return txLocal;
     }

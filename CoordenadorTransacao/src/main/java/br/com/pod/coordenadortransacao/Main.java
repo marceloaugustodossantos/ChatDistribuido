@@ -17,8 +17,9 @@ import java.rmi.registry.Registry;
 public class Main {
     
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {
-        Registry registry = LocateRegistry.createRegistry(8093);
-        registry.bind("CoordenadorTransacaoImpl", new CoordenadorTransacaoImpl());
+        System.out.println("cordenador de transação");
+        Registry registry = LocateRegistry.createRegistry(1237);
+        registry.bind("CoordenadorTransacao", new CoordenadorTransacaoImpl());
     }
     
 }

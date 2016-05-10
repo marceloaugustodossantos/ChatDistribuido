@@ -14,7 +14,7 @@ import java.util.Date;
  *
  * @author Marcelo Augusto
  */
-public class Mensagem implements Serializable{
+public class Mensagem extends RemoteObject implements Serializable{
 
     private long id;
     private long idUsuario;
@@ -22,7 +22,10 @@ public class Mensagem implements Serializable{
     private String mensagem;
     private Date data;
 
+    public Mensagem() throws RemoteException{
+    }
 
+    
     public long getId() {
         return id;
     }

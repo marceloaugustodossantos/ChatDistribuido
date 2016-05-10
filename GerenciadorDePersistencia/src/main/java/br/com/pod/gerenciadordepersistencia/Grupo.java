@@ -17,20 +17,31 @@ import java.util.Objects;
  *
  * @author Marcelo Augusto
  */
-public class Grupo implements Serializable{
+public class Grupo extends RemoteObject implements Serializable{
     
     private long id;
     private String nome;
     private List<Usuario> usuarios; 
+    private List<Mensagem> mensagens;
 
     public Grupo(long id, String nome) {
         this.id = id;
         this.nome = nome;
         this.usuarios = new ArrayList<>();
+        this.mensagens = new ArrayList<>();
     }
 
+    public Grupo() throws RemoteException{
+    }
+    
+    
+    
     public void addUsuario(Usuario usuario){
         this.usuarios.add(usuario);
+    }
+    
+    public void addMensagem(Mensagem mensagem){
+        this.mensagens.add(mensagem);
     }
 
     public long getId() {
@@ -51,6 +62,19 @@ public class Grupo implements Serializable{
 
     public List<Usuario> getUsuarios() {
         return usuarios;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+
+    public List<Mensagem> getMensagens() {
+        return mensagens;
+    }
+
+    public void setMensagens(List<Mensagem> mensagens) {
+        this.mensagens = mensagens;
     }
 
     @Override
@@ -81,7 +105,7 @@ public class Grupo implements Serializable{
 
     @Override
     public String toString() {
-        return "Grupo{" + "id=" + id + ", nome=" + nome + ", usuarios=" + usuarios + '}';
+        return "Grupo{" + "id=" + id + ", nome=" + nome + ", usuarios=" + usuarios + ", mensagens=" + mensagens + '}';
     }
 
 }

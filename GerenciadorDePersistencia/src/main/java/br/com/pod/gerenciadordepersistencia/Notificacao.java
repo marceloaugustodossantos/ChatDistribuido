@@ -17,14 +17,14 @@ import java.util.Objects;
  *
  * @author Marcelo Augusto
  */
-public class Notificacao implements Serializable {
+public class Notificacao extends RemoteObject implements Serializable {
 
     private long id;
     private long idUsuario;
     private String token;
     private List<Mensagem> mensagens;
 
-    public Notificacao() {
+    public Notificacao() throws RemoteException{
         this.mensagens = new ArrayList<>();
     }
 

@@ -77,22 +77,16 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
     private Map<Long, Usuario> listarUsuarios() {
         Map<Long, Usuario> usuarios = new HashMap<>();
         try {
-            coorCoordenadorTransacao.prepareAll();
             List<Usuario> usuariosList = persistenceMenager.listarUsuarios();
             for (Usuario u : usuariosList) {
                 usuarios.put(u.getId(), u);
             }
-            coorCoordenadorTransacao.commitAll();
         } catch (RemoteException e) {
-            try {
-                coorCoordenadorTransacao.rollbackAll();
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-            }
+            e.printStackTrace();
         }
         return usuarios;
     }
-    
+
     @Override
     public Usuario buscarUsuario(Long idUsuario) throws RemoteException {
         return usuarios.get(idUsuario);
@@ -101,16 +95,10 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
     @Override
     public List<Grupo> listarGruposExistentes() throws RemoteException {
         try {
-            coorCoordenadorTransacao.prepareAll();
             List<Grupo> grupos = persistenceMenager.listarGrupos();
-            coorCoordenadorTransacao.commitAll();
             return grupos;
         } catch (RemoteException e) {
-            try {
-                coorCoordenadorTransacao.rollbackAll();
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-            }
+            e.printStackTrace();
         }
         return null;
     }
@@ -118,16 +106,10 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
     @Override
     public List<Grupo> listarGruposDeUsuario(Long idUsuario) throws RemoteException {
         try {
-            coorCoordenadorTransacao.prepareAll();
             List<Grupo> grupos = persistenceMenager.listarGruposDeUsuario(idUsuario);
-            coorCoordenadorTransacao.commitAll();
             return grupos;
         } catch (RemoteException e) {
-            try {
-                coorCoordenadorTransacao.rollbackAll();
-            } catch (RemoteException ex) {
-                ex.printStackTrace();
-            }
+            e.printStackTrace();
         }
         return null;
     }
@@ -164,7 +146,7 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
                 if (usuariosLogados.containsKey(idUsuario)) {
                     msgs.add(mensagem);
                     notificacao.setMensagens(msgs);
-                }else{
+                } else {
                     msgs = getNotificacoesDeUsuario(idUsuario).getMensagens();
                     msgs.add(mensagem);
                     notificacao.setMensagens(msgs);
@@ -185,24 +167,24 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
     public String getTokenNotificationUser(Long idUsuario) throws RemoteException {
         Notificacao notificacao = getNotificacoesDeUsuario(idUsuario);
         String token = notificacao.getToken();
-        persistenceMenager.removerNotificacao(notificacao.getToken());           
+        persistenceMenager.removerNotificacao(notificacao.getToken());
         return token;
     }
 
     private Notificacao getNotificacoesDeUsuario(Long idUsuario) {
         Notificacao notificacao = null;
-        try{
+        try {
             coorCoordenadorTransacao.prepareAll();
             List<Notificacao> notificacoes = persistenceMenager.buscarNotificacoes();
             for (Notificacao n : notificacoes) {
-                if(n.getIdUsuario() == idUsuario){
+                if (n.getIdUsuario() == idUsuario) {
                     notificacao = n;
                     break;
                 }
             }
-        }  catch(RemoteException e){
+        } catch (RemoteException e) {
             e.printStackTrace();
-        } 
+        }
         return notificacao;
     }
 
@@ -219,7 +201,7 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
 
     private PersistenceMenager getPersistenceMenager() {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 10990);
+            Registry registry = LocateRegistry.getRegistry("localhost", 1240);
             PersistenceMenager persistenceMenager = (PersistenceMenager) registry.lookup("PersistenceMenager");
             return persistenceMenager;
         } catch (RemoteException | NotBoundException e) {
@@ -230,8 +212,8 @@ public class ServerAppImpl extends UnicastRemoteObject implements ServerApp {
 
     private CoordenadorTransacao getCoordenadorTransacao() {
         try {
-            Registry registry = LocateRegistry.getRegistry("localhost", 10990);
-            CoordenadorTransacao coordenador = (CoordenadorTransacao) registry.lookup("PersistenceMenager");
+            Registry registry = LocateRegistry.getRegistry("localhost", 1237);
+            CoordenadorTransacao coordenador = (CoordenadorTransacao) registry.lookup("CoordenadorTransacao");
             return coordenador;
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();

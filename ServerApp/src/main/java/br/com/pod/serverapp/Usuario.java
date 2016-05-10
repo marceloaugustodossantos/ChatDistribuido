@@ -30,6 +30,10 @@ public class Usuario implements Serializable{
         this.port = port;
     }
 
+    public Usuario() {
+
+    }
+
     public long getId() {
         return id;
     }
@@ -95,5 +99,12 @@ public class Usuario implements Serializable{
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "id=" + id + ", nome=" + nome + ", email=" + email + ", ip=" + ip + ", port=" + port + '}';
+    }
+
+    
      
 }

@@ -16,11 +16,17 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
 /**
  *
  * @author Marcelo Augusto
  */
-public class TXTPersistence implements Persistence {
+public class TXTPersistence extends UnicastRemoteObject implements Persistence {
+
+    public TXTPersistence() throws RemoteException {
+        super();
+    }
 
     @Override
     public void salvarNotificacoes(String notificacoes) throws RemoteException {
@@ -35,7 +41,7 @@ public class TXTPersistence implements Persistence {
     }
 
     @Override
-    public String buscarNotificacoes() throws RemoteException {        
+    public String buscarNotificacoes() throws RemoteException {
         String result = null;
         try {
             File arquivo = new File("src/main/resources/repository/notificacoes.txt");
@@ -66,8 +72,8 @@ public class TXTPersistence implements Persistence {
         }
         return result;
     }
-    
-    public void atualizarGrupos(String gruposGson)throws RemoteException{
+
+    public void atualizarGrupos(String gruposGson) throws RemoteException {
         try {
             File gruposAntigos = new File("src/main/resources/repository/grupos.txt");
             gruposAntigos.delete();
@@ -84,22 +90,21 @@ public class TXTPersistence implements Persistence {
 
     @Override
     public String buscarMensagens() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
     }
 
     @Override
     public void salvarMensgens(String mensagensJson) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String buscarUsuarios() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
     }
 
     @Override
     public String salvarUsuarios(String usuariosJson) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    } 
+        return "";
+    }
 
 }

@@ -1,2 +1,5 @@
 /UnidadesDePersistencia/target/
 /GerenciadorDePersistencia/target/
+/CoordenadorTransacao/target/
+/ServerApp/target/
+/BarramentoDeEventos/target/

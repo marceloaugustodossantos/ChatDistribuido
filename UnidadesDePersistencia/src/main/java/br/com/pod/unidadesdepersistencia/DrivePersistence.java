@@ -34,6 +34,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +44,7 @@ import java.util.logging.Logger;
  *
  * @author Marcelo Augusto
  */
-public class DrivePersistence implements Persistence {
+public class DrivePersistence extends UnicastRemoteObject implements Persistence {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static HttpTransport httpTransport;
@@ -51,15 +53,8 @@ public class DrivePersistence implements Persistence {
     private final int ENTIDADE_MENSAGENS = 1;
     private final int ENTIDADE_USUARIOS = 2;
 
-    public DrivePersistence(){
-        try {
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-            dataStoreFactory = new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/drive_sample"));
-            Credential credential = authorize();
-            drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName("chat-pod").build();
-        } catch (Exception ex) {
-            Logger.getLogger(DrivePersistence.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public DrivePersistence() throws RemoteException {
+       
     }
 
     //recebe uma lista com todas as mensagens no formato json
@@ -67,6 +62,11 @@ public class DrivePersistence implements Persistence {
     public String buscarMensagens() throws RemoteException {
         String result = "";
         try {
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            dataStoreFactory = new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/drive_sample"));
+            Credential credential = authorize();
+            drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName("chat-pod").build();
+            
             java.io.File parentDir = new java.io.File("src/main/resources/temp/");
             File fileMetadata = new File();
             fileMetadata.setTitle("mensagens.txt");
@@ -84,13 +84,20 @@ public class DrivePersistence implements Persistence {
             arquivo.delete();
         } catch (IOException ex) {
             Logger.getLogger(DrivePersistence.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        } catch (GeneralSecurityException ex) {
+            Logger.getLogger(DrivePersistence.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return result;
     }
 
     //recebe uma lista com todas as mensagens no formato json
     public void salvarMensgens(String mensagensJson) throws RemoteException {
         try {
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            dataStoreFactory = new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/drive_sample"));
+            Credential credential = authorize();
+            drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName("chat-pod").build();
+            
             deleteFile(mensagensJson); //excluir mensagens antigas
 
             File fileMetadata = new File();
@@ -108,9 +115,10 @@ public class DrivePersistence implements Persistence {
             MediaHttpUploader uploader = insert.getMediaHttpUploader();
             uploader.setDirectUploadEnabled(true);
 
-            String url = insert.execute().getDownloadUrl();
-            String id = fileMetadata.getId();
-            salvarPropriedadesDeAcessoMensagens(ENTIDADE_MENSAGENS, id, url);
+            File f = insert.execute();
+            String url = f.getDownloadUrl();
+            String id = f.getId();
+            salvarPropriedadesDeAcesso(ENTIDADE_MENSAGENS, id, url);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -124,11 +132,16 @@ public class DrivePersistence implements Persistence {
             ex.printStackTrace();
         }
     }
-    
+
     //retorna uma lista com todos os usuarios no formato json
-    public String buscarUsuarios() throws RemoteException{
+    public String buscarUsuarios() throws RemoteException {
         String result = "";
         try {
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            dataStoreFactory = new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/drive_sample"));
+            Credential credential = authorize();
+            drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName("chat-pod").build();
+            
             java.io.File parentDir = new java.io.File("src/main/resources/temp/");
             File fileMetadata = new File();
             fileMetadata.setTitle("usuarios.txt");
@@ -146,6 +159,8 @@ public class DrivePersistence implements Persistence {
             arquivo.delete();
         } catch (IOException ex) {
             Logger.getLogger(DrivePersistence.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GeneralSecurityException ex) {
+            Logger.getLogger(DrivePersistence.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -153,7 +168,12 @@ public class DrivePersistence implements Persistence {
     //recebe uma lista com todos os usuarios no formato json
     public String salvarUsuarios(String usuariosJson) throws RemoteException {
         try {
-             deleteFile(usuariosJson); //excluir mensagens antigas
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            dataStoreFactory = new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/drive_sample"));
+            Credential credential = authorize();
+            drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName("chat-pod").build();
+            
+            deleteFile(usuariosJson); //excluir mensagens antigas
 
             File fileMetadata = new File();
             fileMetadata.setTitle("usuarios.txt");
@@ -169,10 +189,11 @@ public class DrivePersistence implements Persistence {
             Drive.Files.Insert insert = drive.files().insert(fileMetadata, mediaContent);
             MediaHttpUploader uploader = insert.getMediaHttpUploader();
             uploader.setDirectUploadEnabled(true);
-
-            String url = insert.execute().getDownloadUrl();
-            String id = fileMetadata.getId();
-            salvarPropriedadesDeAcessoMensagens(ENTIDADE_USUARIOS, id, url);
+            
+            File f = insert.execute();
+            String url = f.getDownloadUrl();
+            String id = f.getId();
+            salvarPropriedadesDeAcesso(ENTIDADE_USUARIOS, id, url);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -194,7 +215,7 @@ public class DrivePersistence implements Persistence {
         return null;
     }
 
-    private void salvarPropriedadesDeAcessoMensagens(int tipoEntidade, String id, String url) {
+    private void salvarPropriedadesDeAcesso(int tipoEntidade, String id, String url) {
         String path;
         if (tipoEntidade == ENTIDADE_MENSAGENS) {
             path = "src/main/resources/repository/PropAcessMsgs.txt";
@@ -230,32 +251,30 @@ public class DrivePersistence implements Persistence {
             result[1] = br.readLine();
             br.close();
             return result;
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
         return null;
     }
 
     @Override
     public void salvarNotificacoes(String notificacao) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public String buscarNotificacoes() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
     }
 
     @Override
     public String buscarGrupos() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
     }
 
     @Override
     public void atualizarGrupos(String gruposGson) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
 }
